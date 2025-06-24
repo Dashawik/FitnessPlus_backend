@@ -1,0 +1,35 @@
+{
+  "name": "fitnessplus_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --inspect=9229 index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/autoload": "^6.3.1",
+    "@fastify/cors": "^11.0.1",
+    "@prisma/client": "^6.9.0",
+    "ajv-errors": "^3.0.0",
+    "bcrypt": "^6.0.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "resend": "^4.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "prisma": "^6.9.0"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@db": "db",
+    "@plugins": "plugins",
+    "@utils": "utils",
+    "@templates": "templates"
+  }
+}
