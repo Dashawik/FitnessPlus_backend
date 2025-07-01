@@ -54,3 +54,12 @@ model JWT {
   lastUsedAt DateTime @default(now())
   User       User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
+
+
+model TrainingType{
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
