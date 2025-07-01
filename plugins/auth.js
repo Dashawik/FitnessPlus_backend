@@ -5,14 +5,14 @@ module.exports = (fastify) => {
     return async (request, reply) => {
       const token = request.headers.authorization?.split(" ")[1];
       if (!token) {
-        reply.status(401).send({ error: "No token provided" });
+        reply.status(401).send({ message: "No token provided" });
         return;
       }
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
         request.user = decoded;
       } catch (err) {
-        reply.status(401).send({ error: "Unauthorized" });
+        reply.status(401).send({ message: "Unauthorized" });
         return;
       }
 
