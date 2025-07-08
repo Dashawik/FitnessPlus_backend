@@ -1,0 +1,40 @@
+name: Deploy
+
+on: [workflow_dispatch, push, pull_request]
+
+env:
+  SERVER_HOST: ${{ secrets.SERVER_IP }}
+  SERVER_USER: root
+  SERVER_PATH: /var/pm2/apps/fitnessplus_backend
+
+  CONFIG_LOCATION: /var/pm2/configs/fitnessplus_backend.config.js
+
+jobs:
+  deploy:
+    name: Deploy and Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      # Setup key
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.ACTION_KEY }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
+      # Build
+      - run: npm ci
+      # Deploy
+      - run: rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete . ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.SERVER_PATH }}
+      # Executing remote ssh commands
+      - name: Execute remote SSH command
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ secrets.ACTION_KEY }}
+          script: cd ${{env.SERVER_PATH}} && npx prisma generate && pm2 reload ${{env.CONFIG_LOCATION}} && pm2 save
