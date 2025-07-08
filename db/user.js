@@ -72,6 +72,19 @@ module.exports = {
     });
   },
 
+  async getTrainerUsers() {
+    return await prisma.user.findMany({
+      where: {
+        role: "TRAINER",
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
+  },
+
   async deleteUser(userId) {
     return await prisma.user.delete({
       where: { id: userId },

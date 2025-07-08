@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -18,17 +15,19 @@ enum Role {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  firstName String
-  lastName  String
-  password  String
-  role      Role     @default(USER)
-  emailVerified Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tokens    Token[]
-  jwt       JWT?
+  id            Int        @id @default(autoincrement())
+  email         String     @unique
+  firstName     String
+  lastName      String
+  password      String
+  role          Role       @default(USER)
+  emailVerified Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  tokens        Token[]
+  jwt           JWT?
+  Training      Training[]
+  bookings      Booking[]
 }
 
 enum TokenType {
@@ -37,12 +36,13 @@ enum TokenType {
 }
 
 model Token {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   userId    Int
   type      TokenType
-  token     String   @unique
-  createdAt DateTime @default(now()) @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  token     String    @unique
+  createdAt DateTime  @default(now()) @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   @@unique([userId, type])
 }
 
@@ -52,14 +52,52 @@ model JWT {
   token      String
   createdAt  DateTime @default(now())
   lastUsedAt DateTime @default(now())
-  User       User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  User       User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
+model TrainingType {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  trainings Training[]
+}
 
-model TrainingType{
+model SubscriptionTemplate {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  price        Float
+  sessionLimit Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Training {
+  id             Int      @id @default(autoincrement())
+  startTime      DateTime
+  endTime        DateTime   
+  typeId         Int
+  type           TrainingType @relation(fields: [typeId], references: [id])   
+  trainerId      Int
+  trainer        User     @relation(fields: [trainerId], references: [id])
+  availableSpots Int      @default(1)
+  bookings       Booking[]
+}
+
+enum BookingStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model Booking {
   id          Int      @id @default(autoincrement())
-  name        String   @unique
+  userId      Int
+  trainingId  Int
+  status      BookingStatus @default(ACTIVE)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  training    Training @relation(fields: [trainingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  @@unique([userId, trainingId])
 }
-
