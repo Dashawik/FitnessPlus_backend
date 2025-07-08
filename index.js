@@ -36,7 +36,7 @@ fastify.setErrorHandler((error, request, reply) => {
 
 const start = async () => {
   try {
-    const address = await fastify.listen({ port: 3001, host: "0.0.0.0" });
+    const address = await fastify.listen({ port: process.env.PORT, host: "0.0.0.0" });
 
     console.log(`Server running on ${address}`);
     console.log(fastify.printRoutes());
