@@ -42,7 +42,9 @@ async function handler(request, reply) {
     const { startTime, endTime } = request.query;
 
     if (startTime >= endTime) {
-        return reply.badRequest("Start time must be before end time");
+        return reply.status(400).send({
+            details: ["Start time must be before end time"],
+        });
     }
 
     let trainings;

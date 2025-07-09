@@ -69,17 +69,16 @@ async function handler(request, reply) {
 
   const { startTime, endTime, typeId, trainerId, availableSpots } = request.body;
 
-
   if (new Date(startTime) >= new Date(endTime)) {
-    return reply.status(400).send({ details: "Start time must be before end time" });
+    return reply.status(400).send({ details: ["Start time must be before end time"] });
   }
 
   const conflict = await hasConflict(trainerId, endTime, startTime);
   if (conflict) {
-    return reply.status(400).send({ details: "Training time conflicts with an existing training" });
+    return reply.status(400).send({ details: ["Training time conflicts with an existing training"] });
   }
 
   await createTraining(startTime, endTime, typeId, trainerId, availableSpots);
-  reply.code(201).send({ details: "Training created successfully" });
+  reply.code(201).send({ details: ["Training created successfully"] });
 
 }

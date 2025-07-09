@@ -88,19 +88,19 @@ async function handler(request, reply) {
 
     const training = await getTrainingById(id);
     if (!training) {
-        return reply.status(404).send({ details: "Training not found" });
+        return reply.status(404).send({ details: ["Training not found"] });
     }
 
     if ((request.user.role == "TRAINER") && (training.trainerId !== request.user.id)) {
         return reply
             .status(403)
-            .send({ details: "You are not authorized to update this training" });
+            .send({ details: ["You are not authorized to update this training"] });
     }
 
     if (new Date(startTime) >= new Date(endTime)) {
         return reply
             .status(400)
-            .send({ details: "Start time must be before end time" });
+            .send({ details: ["Start time must be before end time"] });
     }
     const updatedTraining = await updateTraining(
         id,
@@ -111,9 +111,9 @@ async function handler(request, reply) {
         availableSpots
     );
     if (!updatedTraining) {
-        return reply.status(500).send({ details: "Failed to update training" });
+        return reply.status(500).send({ details: ["Failed to update training"] });
     }
     return reply.status(200).send({
-        details: "Training updated successfully",
+        details: ["Training updated successfully"],
     });
 }

@@ -33,15 +33,15 @@ async function handler(request, reply) {
 
     const training = await getTrainingById(id);
     if (!training) {
-        return reply.status(404).send({ details: "Training not found" });
+        return reply.status(404).send({ details: ["Training not found"] });
     }
 
     if ((request.user.role == "TRAINER") && (training.trainerId !== request.user.id)) {
         return reply
             .status(403)
-            .send({ details: "You are not authorized to update this training" });
+            .send({ details: ["You are not authorized to update this training"] });
     }
 
     await deleteTraining(id);
-    return reply.status(200).send({ details: "Training deleted successfully" });
+    return reply.status(200).send({ details: ["Training deleted successfully"] });
 }
