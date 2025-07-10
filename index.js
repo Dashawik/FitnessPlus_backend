@@ -17,7 +17,7 @@ fastify.register(require('@fastify/autoload'), {
 
 fastify.register(require("@fastify/cors"), {
   hook: "preValidation",
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", "https://fitnessplus.sded.cc", "http://fitnessplus.sded.cc"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 });
 
