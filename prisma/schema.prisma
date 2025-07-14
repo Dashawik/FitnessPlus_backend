@@ -28,6 +28,7 @@ model User {
   jwt           JWT?
   Training      Training[]
   bookings      Booking[]
+  subscriptions Subscription[]
 }
 
 enum TokenType {
@@ -70,6 +71,19 @@ model SubscriptionTemplate {
   sessionLimit Int?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  templateId         Int
+  startDate          DateTime @default(now())
+  endDate            DateTime
+  availableSessions  Int      @default(0)
+  isActive           Boolean  @default(true)
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  template           SubscriptionTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Training {
