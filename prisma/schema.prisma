@@ -26,7 +26,7 @@ model User {
   updatedAt     DateTime   @updatedAt
   tokens        Token[]
   jwt           JWT?
-  Training      Training[]
+  Training      Training[]  
   bookings      Booking[]
   subscriptions Subscription[]
 }
@@ -91,9 +91,9 @@ model Training {
   startTime      DateTime
   endTime        DateTime   
   typeId         Int
-  type           TrainingType @relation(fields: [typeId], references: [id])   
+  type           TrainingType @relation(fields: [typeId], references: [id] , onDelete: Cascade, onUpdate: Cascade)   
   trainerId      Int
-  trainer        User     @relation(fields: [trainerId], references: [id])
+  trainer        User     @relation(fields: [trainerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   availableSpots Int      @default(1)
   bookings       Booking[]
 }
@@ -113,5 +113,5 @@ model Booking {
   training    Training @relation(fields: [trainingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  @@unique([userId, trainingId])
+
 }
