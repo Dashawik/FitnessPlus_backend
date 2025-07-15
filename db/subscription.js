@@ -96,5 +96,30 @@ module.exports = {
         });
     },
 
+
+    async getActiveSubscriptionByUserId(userId) {
+        return await prisma.Subscription.findMany({
+            where: {
+                userId,
+                isActive: true,
+                availableSessions: {
+                    gt: 0,
+                },
+            },
+            select: {
+                id: true,
+                templateId: true,
+                startDate: true,
+                endDate: true,
+                availableSessions: true,
+                isActive: true,
+                template: {
+                    select: {
+                        name: true,
+                    }
+                }
+            }
+        });
+    },
 };
 
