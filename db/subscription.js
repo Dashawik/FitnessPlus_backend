@@ -121,5 +121,22 @@ module.exports = {
             }
         });
     },
+
+    async getAllActiveSubscriptions() {
+        return await prisma.Subscription.findMany({
+            where: {
+                isActive: true,
+            }
+        });
+    },
+
+    async closeSubscription(id) {
+        return await prisma.Subscription.update({
+            where: { id },
+            data: {
+                isActive: false,
+            }
+        });
+    }
 };
 

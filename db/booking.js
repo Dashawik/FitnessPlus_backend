@@ -159,7 +159,36 @@ module.exports = {
                 },
             },
         });
-    }
+    },
 
+    async getAllActiveBookings() {
+        return await prisma.booking.findMany({
+            where: {
+                status: 'ACTIVE',
+            },
+            include: {
+                training: {
+                    select: {
+                        id: true,
+                        startTime: true,
+                        endTime: true,
+                    }
+                }
+            },
+            orderBy: {
+                training: {
+                    startTime: 'desc',
+                },
+            },
+        });
+    },
+
+
+    async completeBooking(bookingId) {
+        return await prisma.booking.update({
+            where: { id: bookingId },
+            data: { status: 'COMPLETED' },
+        });
+    }
 };
 

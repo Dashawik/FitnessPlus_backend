@@ -1,7 +1,6 @@
-
 require("dotenv").config();
 require("module-alias/register");
-const path = require('path')
+const path = require("path");
 const fastify = require("fastify")({
   logger: true,
   ajv: {
@@ -10,14 +9,19 @@ const fastify = require("fastify")({
   },
 });
 require("@plugins/auth")(fastify);
+require("@plugins/cron")();
 require("@utils/jwt")(fastify);
-fastify.register(require('@fastify/autoload'), {
+fastify.register(require("@fastify/autoload"), {
   dir: path.join(__dirname, "routes"),
 });
 
 fastify.register(require("@fastify/cors"), {
   hook: "preValidation",
-  origin: ["http://localhost:5173", "https://fitnessplus.sded.cc", "http://fitnessplus.sded.cc"],
+  origin: [
+    "http://localhost:5173",
+    "https://fitnessplus.sded.cc",
+    "http://fitnessplus.sded.cc",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 });
 
@@ -36,7 +40,10 @@ fastify.setErrorHandler((error, request, reply) => {
 
 const start = async () => {
   try {
-    const address = await fastify.listen({ port: process.env.PORT, host: "0.0.0.0" });
+    const address = await fastify.listen({
+      port: process.env.PORT,
+      host: "0.0.0.0",
+    });
 
     console.log(`Server running on ${address}`);
     console.log(fastify.printRoutes());
@@ -47,4 +54,3 @@ const start = async () => {
 };
 
 start();
-
