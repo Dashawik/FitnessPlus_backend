@@ -21,7 +21,29 @@ module.exports = {
     },
 
     async getAllSubscriptions() {
-        return await prisma.Subscription.findMany();
+        return await prisma.Subscription.findMany({
+            select: {
+                id: true,
+                templateId: true,
+                startDate: true,
+                endDate: true,
+                availableSessions: true,
+                isActive: true,
+                template: {
+                    select: {
+                        name: true,
+                    }
+                },
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                    }
+                }
+            }
+        });
     },
 
     async getSubscriptionByUserId(userId) {
@@ -63,6 +85,16 @@ module.exports = {
                 }
             }
         });
-    }
+    },
+
+    async updateSubscription(id, data) {
+        return await prisma.Subscription.update({
+            where: { id },
+            data: {
+                ...data,
+            }
+        });
+    },
+
 };
 
