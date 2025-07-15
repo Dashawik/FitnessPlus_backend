@@ -31,14 +31,16 @@ module.exports = {
 
     async getBookingByTrainingId(trainingId) {
         return await prisma.booking.findMany({
-            where: { trainingId },
+            where: {
+                trainingId,
+            },
             include: {
                 user: {
                     select: {
                         id: true,
-                        name: true,
-                        email: true,
-                    }
+                        firstName: true,
+                        lastName: true,
+                    },
                 },
             },
         });
@@ -120,6 +122,44 @@ module.exports = {
         });
     },
 
+    async getAllBookings() {
+        return await prisma.booking.findMany({
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                    }
+                },
+                training: {
+                    select: {
+                        id: true,
+                        startTime: true,
+                        endTime: true,
+                        type: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                        trainer: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                            },
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                training: {
+                    startTime: 'desc',
+                },
+            },
+        });
+    }
 
 };
 

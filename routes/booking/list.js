@@ -12,11 +12,20 @@ module.exports = (fastify, opts, next) => {
 };
 
 async function handler(request, reply) {
-    const { getBookingByUserId } = require("@db/booking");
+    const { getBookingByUserId, getAllBookings } = require("@db/booking");
 
     const userId = request.user.id;
 
-    const bookings = await getBookingByUserId(userId);
+    const userRole = request.user.role;
+
+    let bookings
+
+    if (userRole === "ADMIN") {
+        bookings = await getAllBookings();
+    } else if (userRole === "USER") {
+        bookings = await getBookingByUserId(userId);
+    }
+
 
 
     return reply.send(bookings);

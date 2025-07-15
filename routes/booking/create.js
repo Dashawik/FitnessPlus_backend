@@ -97,7 +97,11 @@ async function handler(request, reply) {
     }
 
     const existingBooking = await findByUserIdAndTrainingId(userId, trainingId);
-    if (existingBooking) {
+
+    console.log("Existing booking:", existingBooking);
+
+
+    if (existingBooking && existingBooking.status !== 'CANCELLED') {
         return reply
             .status(400)
             .send({ details: "Booking for this user and training already exists" });

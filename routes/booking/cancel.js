@@ -30,7 +30,7 @@ module.exports = (fastify, opts, next) => {
 async function handler(request, reply) {
     const { cancelBooking, getBookingById } = require("@db/booking");
 
-    const { incrementSessions } = require("@db/subscription");
+    const { incrementSessions, getActiveSubscriptionByUserId } = require("@db/subscription");
 
     const bookingId = request.params.id;
     const userId = request.user.id;
@@ -51,7 +51,10 @@ async function handler(request, reply) {
     const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
 
     if (new Date(booking.training.startTime) > twoHoursLater) {
-        await incrementSessions(bookingId);
+
+        const activeSubscription = await getActiveSubscriptionByUserId(userId);
+        if (activeSubscription.length)
+            await incrementSessions(activeSubscription[0].id);
         return reply.status(200).send({ details: "Booking cancelled and sessions incremented" });
     }
 
